@@ -7,7 +7,7 @@ lc2 %>%
 ggplot(data = lc2, aes(x = emp_length)) + geom_bar()
 
 # Loan Purpose Bar Chart
-ggplot(lc2, aes(x= purpose, fill = loan_status)) +
+ggplot(lc2, aes(x= purpose, fill = loan_status2)) +
   geom_bar() + xlab('Purpose') + 
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 
@@ -29,12 +29,12 @@ lc %>%
   group_by(pymnt_plan, loan_status) %>%
   count()
 
-# DTI Histogram
+# dti Histogram
 ggplot(lc2, aes(x = dti, fill = loan_status)) + 
-  geom_histogram(col = 'white') + xlab('dti')
+  geom_histogram(col = 'white', binwidth = 1) + xlab('dti')
 
 ggplot(lc2, aes(x = dti, fill = loan_status2)) + 
-  geom_histogram(col = 'white') + xlab('dti')
+  geom_histogram(col = 'white', binwidth = 1) + xlab('dti')
 
 # Distribution of Features about Negative Remarks
 ggplot(lc2, aes(x = delinq_2yrs, fill = loan_status2)) + 
@@ -43,8 +43,12 @@ ggplot(lc2, aes(x = delinq_2yrs, fill = loan_status2)) +
 ggplot(lc2, aes(x = inq_last_6mths, fill = loan_status2)) + 
   geom_histogram(col = 'white', binwidth = 1) + xlab('Inquiries in Last 6 months')
 
+# Has NA in mths_since_last_delinq, mths_since_last_record, mths_since_last_major_deroj, 
+#   mths_since_recent_bc_dlq, mo_sin_old_il_acct, mths_since_recent_inq, 
+#   mths_since_recent_revolv_delinq, mths_since_recent_inq
 ggplot(lc, aes(x = mths_since_last_delinq, fill = loan_status)) + 
   geom_histogram(col = 'white', binwidth = 6) + xlab('Months since last delinquincies')
+
 lc2 %>% group_by(mths_since_last_delinq) %>% count()
 lc2 %>% filter(is.na(mths_since_last_delinq)) %>% count()
 
@@ -62,10 +66,6 @@ ggplot(lc, aes(x = mths_since_recent_bc_dlq, fill = loan_status)) +
 ggplot(lc, aes(x = mo_sin_old_il_acct, fill = loan_status)) + 
   geom_histogram(col = 'white', binwidth = 12) + xlab('Months Since Old Installation Account')
 
-ggplot(lc2, aes(x = mo_sin_old_il_acct, fill = loan_status)) + 
-  geom_bar(col = 'white') + xlab('Months Since Old Install. Account (Binned)')+ 
-  theme(axis.text.x = element_text(angle = 90, hjust = 1))
-
 ggplot(lc, aes(x = mths_since_recent_inq, fill = loan_status)) + 
   geom_histogram(col = 'white', binwidth = 1) + xlab('Months Since Recent Inquiry')
 ggplot(lc2, aes(x = mths_since_recent_inq, fill = loan_status)) + 
@@ -80,7 +80,6 @@ ggplot(lc, aes(x = mths_since_recent_revol_delinq, fill = loan_status)) +
 lc2 %>% 
   group_by(loan_status) %>%
   count()
-
 
 ggplot(lc2, aes(x = loan_amnt, fill = loan_status)) + 
   geom_histogram(binwidth = 1000, col = 'white') + xlab('Loan Amt')
@@ -112,6 +111,16 @@ ggplot(lc2, aes(x = annual_inc_joint, fill = loan_status2)) +
   coord_cartesian(xlim = c(0,500000))
 
 # Issue Date Distribution
-ggplot(lc2,aes(x = issue_d2, fill = loan_status2)) + 
+ggplot(lc2,aes(x = issue_dsincelc, fill = loan_status2)) + 
   geom_histogram(bins = 50, col= 'black') +
-  xlab('Issue Date')
+  xlab('Issue Date (based on LC Start Yr')
+
+# Number of Accounts Ever 120 Days Past Due Distribution
+ggplot(lc2,aes(x = lc2$num_accts_ever_120_pd, fill = loan_status2)) + 
+  geom_histogram(binwidth = 1, col= 'black') +
+  xlab('Issue Date (based on LC Start Yr')
+
+lc2 %>% group_by(num_accts_ever_120_pd) %>% count()
+
+# Loan Status
+ggplot(lc2,aes(x = lc2$loan_status2)) + geom_bar()
