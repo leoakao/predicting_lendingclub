@@ -1,6 +1,7 @@
 # Machine Learning -------------------------------------------------------
 library(caTools)
 library(ElemStatLearn)
+library(rpart)
 
 set.seed(510)
 split <- sample.split(lc2$loan_status2, SplitRatio = 0.75)
@@ -102,3 +103,9 @@ print(cm2)
 
 misclass2 <- (cm2[1,2] + cm2[2,1])/sum(cm2)
 print(misclass2)
+
+# Fitting Decision Tree Classification to the Training set
+dectree = rpart(formula = loan_status2 ~ ., data = training_set)
+
+# Predicting the Test set results
+y_pred = predict(dectree , newdata = test_set[-77], type = 'class')
