@@ -81,7 +81,7 @@ lc2 %>%
   group_by(loan_status) %>%
   count()
 
-ggplot(lc2, aes(x = loan_amnt, fill = loan_status)) + 
+ggplot(lc2, aes(x = loan_amnt, fill = loan_status2)) + 
   geom_histogram(binwidth = 1000, col = 'white') + xlab('Loan Amt')
 
 ggplot(lc2, aes(x = loan_amnt, fill = loan_status)) + 

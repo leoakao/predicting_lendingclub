@@ -8,7 +8,32 @@ split <- sample.split(lc2$loan_status2, SplitRatio = 0.75)
 training_set <- subset(lc2, split == TRUE)
 test_set <- subset(lc2, split == FALSE)
 
-# Fitting Logistic Regression to the Training set (Unrestricted Model)
+# Logit Regression Fitting
+logit <- function(traindata1, yvar){
+  logit1 <- substitute(glm(formula = yvar ~ .,
+                family = binomial,
+                data = traindata1))
+}
+
+logit1 <- logit(training_set,loan_status2)
+summary(logit1)
+
+# Predicting the Test set results
+predlogit<-function(logit, testdata, yvar, cutoff){
+  prob_pred <- predict(logit, type = 'response', newdata = testdata[,-yvar])
+  y_pred <- ifelse(prob_pred > cutoff, 1, 0)
+}
+
+# Making the Confusion Matrix
+cm <- table(test_set[, 77], y_pred)
+print(cm)
+
+misclass1 <- (cm[1,2] + cm[2,1])/sum(cm)
+print(misclass1)
+
+
+# Fitting Logistic Regression to the Training set 
+# Unrestricted Model
 logit1 <- glm(formula = loan_status2 ~ .,
                  family = binomial,
                  data = training_set)
@@ -25,6 +50,10 @@ print(cm)
 
 misclass1 <- (cm[1,2] + cm[2,1])/sum(cm)
 print(misclass1)
+
+
+
+
 
 # Fitting Logistic Regression to the Training set (Restricted Model #1)
 training2 <- training_set
@@ -109,3 +138,6 @@ dectree = rpart(formula = loan_status2 ~ ., data = training_set)
 
 # Predicting the Test set results
 y_pred = predict(dectree , newdata = test_set[-77], type = 'class')
+
+
+# Logit Boost
