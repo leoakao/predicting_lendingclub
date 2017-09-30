@@ -1,3 +1,5 @@
+directory = "D:/SharedFolder"
+setwd(directory)
 lc <- read.csv("LoanStats3b.csv", stringsAsFactors = FALSE)
 
 library(dplyr)

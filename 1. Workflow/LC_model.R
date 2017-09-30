@@ -1,4 +1,4 @@
-# Machine Learning -------------------------------------------------------
+# Machine Learning ---------------------------------------------------------------------------
 library(caTools)
 library(ElemStatLearn)
 library(rpart)
@@ -8,77 +8,53 @@ split <- sample.split(lc2$loan_status2, SplitRatio = 0.75)
 training_set <- subset(lc2, split == TRUE)
 test_set <- subset(lc2, split == FALSE)
 
-# Logit Regression Fitting
+# Logit Regression Training --------------------------------------------------------------------
 logit <- function(traindata1, yvar){
-  logit1 <- substitute(glm(formula = yvar ~ .,
+  logit1 <- eval(substitute(glm(formula = yvar ~ .,
                 family = binomial,
-                data = traindata1))
+                data = traindata1)))
 }
-
-logit1 <- logit(training_set,loan_status2)
-summary(logit1)
 
 # Predicting the Test set results
 predlogit<-function(logit, testdata, yvar, cutoff){
-  prob_pred <- predict(logit, type = 'response', newdata = testdata[,-yvar])
-  y_pred <- ifelse(prob_pred > cutoff, 1, 0)
+  prob_pred <- eval(substitute(predict(logit, type = 'response', newdata = testdata[,-yvar])))
+  y_pred <- eval(substitute(ifelse(prob_pred > cutoff, 1, 0)))
+  y_pred <- ifelse(y_pred > 0.5, 1, 0)
 }
 
 # Making the Confusion Matrix
-cm <- table(test_set[, 77], y_pred)
-print(cm)
+cm <- function(testdata, predlogit, yvar){
+  result <- table(testdata[,yvar],predlogit)
+  return(result)
+}
 
-misclass1 <- (cm[1,2] + cm[2,1])/sum(cm)
-print(misclass1)
+# Misclassification Rate 
+misclasslogit <- function(cm){
+  misclassrate <- (cm[1,2] + cm[2,1])/sum(cm)
+  return(misclassrate)
+}
 
-
-# Fitting Logistic Regression to the Training set 
 # Unrestricted Model
-logit1 <- glm(formula = loan_status2 ~ .,
-                 family = binomial,
-                 data = training_set)
 
+logit1 <- logit(training_set,loan_status2)
 summary(logit1)
+predlogit1 <- predlogit(logit1,test_set, 77, 0.5)
+cm1 <- cm(test_set,predlogit1,77)
+misc1 <- misclasslogit(cm1)
 
-# Predicting the Test set results
-prob_pred <- predict(logit1, type = 'response', newdata = test_set[,-77])
-y_pred <- ifelse(prob_pred > 0.5, 1, 0)
-
-# Making the Confusion Matrix
-cm <- table(test_set[, 77], y_pred)
-print(cm)
-
-misclass1 <- (cm[1,2] + cm[2,1])/sum(cm)
-print(misclass1)
-
-
-
-
-
-# Fitting Logistic Regression to the Training set (Restricted Model #1)
+# Restricted Model #1
 training2 <- training_set
 training2$open_acc <- NULL
 test2 <- test_set
 test2$open_acc <-NULL
 
-logit2 <- glm(formula = loan_status2 ~ .,
-              family = binomial,
-              data = training2)
+logit1 <- logit(training2,loan_status2)
+summary(logit1)
+predlogit1 <- predlogit(logit1,test2, 76, 0.5)
+cm2 <- cm(test2,predlogit1,76)
+misc2 <- misclasslogit(cm2)
 
-summary(logit2)
-
-# Predicting the Test set results
-prob_pred2 <- predict(logit2, type = 'response', newdata = test_set[,-77])
-y_pred2 <- ifelse(prob_pred > 0.5, 1, 0)
-
-# Making the Confusion Matrix
-cm2 <- table(test_set[, 77], y_pred)
-print(cm2)
-
-misclass2 <- (cm2[1,2] + cm2[2,1])/sum(cm2)
-print(misclass2)
-
-# Fitting Logistic Regression to the Training set (Restricted Model #2)
+# Restricted Model #2
 training2[c('mths_since_recent_bc_dlq_0-12','mths_since_recent_bc_dlq_13-24', 
             'mths_since_recent_bc_dlq_25-48', 'mths_since_recent_bc_dlq_49-84',
             'mths_since_recent_bc_dlq_85+')] <- NULL
@@ -86,58 +62,57 @@ test2[c('mths_since_recent_bc_dlq_0-12','mths_since_recent_bc_dlq_13-24',
         'mths_since_recent_bc_dlq_25-48', 'mths_since_recent_bc_dlq_49-84',
         'mths_since_recent_bc_dlq_85+')] <- NULL
 
-logit2 <- glm(formula = loan_status2 ~ .,
-              family = binomial,
-              data = training2)
+logit1 <- logit(training2,loan_status2)
+summary(logit1)
+predlogit1 <- predlogit(logit1,test2, 71, 0.5)
+cm3 <- cm(test2,predlogit1,71)
+misc3 <- misclasslogit(cm3)
 
-summary(logit2)
-
-# Fitting Logistic Regression to the Training set (Restricted Model #3)
+# Restricted Model #3
 training2[c('acc_now_delinq')] <- NULL
 test2[c('acc_now_delinq')] <- NULL
 
-logit2 <- glm(formula = loan_status2 ~ .,
-              family = binomial,
-              data = training2)
+logit1 <- logit(training2,loan_status2)
+summary(logit1)
+predlogit1 <- predlogit(logit1,test2, 70, 0.5)
+cm4 <- cm(test2,predlogit1,70)
+misc4 <- misclasslogit(cm4)
 
-summary(logit2)
-
-# Fitting Logistic Regression to the Training set (Restricted Model #4)
+# Restricted Model #4
 training2[c('num_actv_bc_tl')] <- NULL
 test2[c('num_actv_bc_tl')] <- NULL
 
-logit2 <- glm(formula = loan_status2 ~ .,
-              family = binomial,
-              data = training2)
+logit1 <- logit(training2,loan_status2)
+summary(logit1)
+predlogit1 <- predlogit(logit1,test2, 69, 0.5)
+cm5 <- cm(test2,predlogit1, 69)
+misc5 <- misclasslogit(cm5)
 
-summary(logit2)
-
-# Fitting Logistic Regression to the Training set (Restricted Model #5)
+# Restricted Model #5
 training2[c('num_accts_ever_120_pd')] <- NULL
 test2[c('num_accts_ever_120_pd')] <- NULL
 
-logit2 <- glm(formula = loan_status2 ~ .,
-              family = binomial,
-              data = training2)
+logit1 <- logit(training2,loan_status2)
+summary(logit1)
+predlogit1 <- predlogit(logit1,test2, 68, 0.5)
+cm6 <- cm(test2,predlogit1, 68)
+misc6 <- misclasslogit(cm6)
 
-summary(logit2)
+# # Logit Boost
+# logitb <- LogitBoost(training2[,-68],training2[,68],nIter = 10)
+# predb   = predict(logitb, training2[,-68])
 
+# Decision Tree Training -----------------------------------------------------------------------
+training_set$loan_status2 <- factor(training_set$loan_status2, levels = c(0, 1))
+test_set$loan_status2 <- factor(test_set$loan_status2, levels = c(0, 1))
+preddectree = rpart(formula = loan_status2 ~ ., data = training_set)
 # Predicting the Test set results
-prob_pred2 <- predict(logit2, type = 'response', newdata = test_set[,-77])
-y_pred2 <- ifelse(prob_pred > 0.5, 1, 0)
+pred_dt = predict(preddectree, newdata = test_set[-77], type = 'class')
 
-# Making the Confusion Matrix
-cm2 <- table(test_set[, 77], y_pred)
-print(cm2)
+cm_dt1 <- table(test_set[,77],pred_dt)
+print(cm_dt1)
 
-misclass2 <- (cm2[1,2] + cm2[2,1])/sum(cm2)
-print(misclass2)
-
-# Fitting Decision Tree Classification to the Training set
-dectree = rpart(formula = loan_status2 ~ ., data = training_set)
-
-# Predicting the Test set results
-y_pred = predict(dectree , newdata = test_set[-77], type = 'class')
-
+plot(preddectree)
+text(preddectree)
 
 # Logit Boost
