@@ -95,7 +95,7 @@ ggplot(lc2, aes(x = int_rate, fill = loan_status)) +
 
 # Interest Rate Distribution
 ggplot(lc2, aes(x = int_rate)) + 
-  geom_histogram(position = 'identity', binwidth = 0.01, col = 'white') + xlab('Loan Amt')
+  geom_histogram(position = 'identity', binwidth = 0.01, col = 'white') + xlab('Interest Rate')
 
 # Income Distribution
 ggplot(lc2, aes(x = annual_inc, fill = loan_status2)) + 
@@ -118,9 +118,20 @@ ggplot(lc2,aes(x = issue_dsincelc, fill = loan_status2)) +
 # Number of Accounts Ever 120 Days Past Due Distribution
 ggplot(lc2,aes(x = lc2$num_accts_ever_120_pd, fill = loan_status2)) + 
   geom_histogram(binwidth = 1, col= 'black') +
-  xlab('Issue Date (based on LC Start Yr')
+  xlab('Number of Accounts Ever 120 Days Past Due')
 
 lc2 %>% group_by(num_accts_ever_120_pd) %>% count()
+
+# Number of currently active bankcard accounts Distribution
+ggplot(lc2,aes(x = lc2$num_actv_bc_tl, fill = loan_status2)) + 
+  geom_histogram(binwidth = 1, col= 'black') +
+  xlab('Number of Active Bank Card Distribution')
+
+# Number of currently active bankcard accounts Distribution
+ggplot(lc2,aes(x = lc2$num_actv_rev_tl, fill = loan_status2)) + 
+  geom_histogram(binwidth = 1, col= 'black') +
+  xlab('Number of Active Revolving Accounts Distribution')
+
 
 # Loan Status
 ggplot(lc2,aes(x = lc2$loan_status2)) + geom_bar()

@@ -33,6 +33,7 @@ lc2$int_rate <- as.numeric(gsub("%","",lc2$int_rate))/100
 # Fixing Dates to Months Since August 2007 (FOUNDING MONTH)
 lc2$issue_dsincelc<-mdy(paste(substr(lc2$issue_d, 1,3),"01",substr(lc2$issue_d,5,6)))
 lc2$issue_dsincelc<-round(difftime( lc2$issue_dsincelc , ymd("2007-08-01"), units= 'day')/365.25,3)
+lc2$issue_dsincelc <- as.numeric(lc2$issue_dsincelc)
 
 # Defining Loan Default
 lc2$loan_status2 <- recode(lc2$loan_status, "Charged Off" = 1, "Default" = 1, "Current" = 0,
@@ -78,6 +79,9 @@ lc2$mths_since_recent_revol_delinq_NA <- NULL
 
 # Impute Values
 lc2[c('num_accts_ever_120_pd')][is.na(lc2[c('num_accts_ever_120_pd')])] <- 0
+
+lc2$num_actv_bc_tl[is.na(lc2$num_actv_bc_tl)] =median(lc2$num_actv_bc_tl, na.rm=TRUE)
+lc2$num_actv_rev_tl[is.na(lc2$num_actv_rev_tl )] =median(lc2$num_actv_rev_tl , na.rm=TRUE)
   
 # Final Export for Python TPOT------------------------------------------------------------------
 lc2$loan_status <- NULL
