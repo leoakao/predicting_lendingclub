@@ -1,4 +1,4 @@
-directory = "D:/SharedFolder"
+directory = "C:/Projects/lendingclub"
 setwd(directory)
 lc <- read.csv("LoanStats3b.csv", stringsAsFactors = FALSE)
 
