@@ -42,7 +42,6 @@ misclass <- function(cm){
 }
 
 # Unrestricted Model
-
 logit1 <- logit(training_set,loan_status2)
 summary(logit1)
 predlogit1 <- predlogit(logit1,test_set, 77, 0.5)
@@ -134,7 +133,6 @@ xgb <- xgboost(data = data.matrix(training_set[,-77]),
                silent = 0
 )
 
-
 predxgb <- predict(xgb,data.matrix(test_set[,-77]))
 predxgb <- ifelse(predxgb > 0.5, 1, 0)
 cm_xgb <- cm(test_set,predxgb,77)
@@ -149,24 +147,6 @@ misc_xgb <- misclass(cm_xgb)
 
 print(imatrix)
 # write.csv(imatrix, file = "imatrix.csv")
-
-# test3<- test_set
-# test3[c("purpose_debt_consolidation","purpose_credit_card","purpose_home_improvement","purpose_small_business",
-#                        "purpose_major_purchase","purpose_medical","purpose_wedding","purpose_moving","purpose_car",
-#                        "purpose_vacation","purpose_house","purpose_renewable_energy", "mths_since_last_record_85+",
-#                        "mths_since_last_record_49-84","mths_since_last_record_25-48","mths_since_last_record_0-12",
-#                        "mths_since_last_record_13-24", "collections_12_mths_ex_med","chargeoff_within_12_mths",
-#                       "acc_now_delinq","tax_liens"
-#         )] <- NULL
-# 
-# training3<- training_set
-# training3[c("purpose_debt_consolidation","purpose_credit_card","purpose_home_improvement","purpose_small_business",
-#         "purpose_major_purchase","purpose_medical","purpose_wedding","purpose_moving","purpose_car",
-#         "purpose_vacation","purpose_house","purpose_renewable_energy", "mths_since_last_record_85+",
-#         "mths_since_last_record_49-84","mths_since_last_record_25-48","mths_since_last_record_0-12",
-#         "mths_since_last_record_13-24", "collections_12_mths_ex_med","chargeoff_within_12_mths",
-#         "acc_now_delinq","tax_liens"
-#         )] <- NULL
 
 training3<- training_set[c("annual_inc", "delinq_2yrs", "dti", "emp_length_0-2", "emp_length_10+", "emp_length_3-5",
                            "emp_length_6-10", "home_ownership_MORTGAGE", "home_ownership_OTHER",
