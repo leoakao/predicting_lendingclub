@@ -35,13 +35,16 @@ lc2$issue_dsincelc<-mdy(paste(substr(lc2$issue_d, 1,3),"01",substr(lc2$issue_d,5
 lc2$issue_dsincelc<-round(difftime( lc2$issue_dsincelc , ymd("2007-08-01"), units= 'day')/365.25,3)
 lc2$issue_dsincelc <- as.numeric(lc2$issue_dsincelc)
 
-# Defining Loan Default
+lc2$issue_d <- NULL
+
+# Defining Loan Default (1 - Defaulted, 0 - Not Defaulted)
 lc2$loan_status2 <- recode(lc2$loan_status, "Charged Off" = 1, "Default" = 1, "Current" = 0,
                            "Fully Paid" = 0, "In Grace Period" = 0, "Late (16-30 days)" = 0,
                            "Late (31-120 days)" = 0)
 lc2$loan_status2 <- as.factor(lc2$loan_status2)
+lc2$loan_status <-NULL
   
-# (Optional) Execute Data Exploration Before Creating Dummy Variables
+# Execute Data Exploration Before Creating Dummy Variables 
 
 # Categorizing (or Recategorizing) Data & Creating Dummmy Variables
 lc2$emp_length <- recode(lc2$emp_length, "< 1 year"="0-2", "1 year" = "0-2",
@@ -82,10 +85,6 @@ lc2[c('num_accts_ever_120_pd')][is.na(lc2[c('num_accts_ever_120_pd')])] <- 0
 
 lc2$num_actv_bc_tl[is.na(lc2$num_actv_bc_tl)] =median(lc2$num_actv_bc_tl, na.rm=TRUE)
 lc2$num_actv_rev_tl[is.na(lc2$num_actv_rev_tl )] =median(lc2$num_actv_rev_tl , na.rm=TRUE)
-  
+
 # Final Export for Python TPOT------------------------------------------------------------------
-lc2$loan_status <- NULL
-lc2$issue_d <- NULL
-
-
-write.csv(lc2, file = "lcclean.csv", row.names = FALSE)
+# write.csv(lc2, file = "lcclean.csv", row.names = FALSE)
